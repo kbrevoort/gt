@@ -4,6 +4,10 @@
 
 * `gtsave()` now returns the file path invisibly instead of `TRUE` (@olivroy, #1478).
 
+* Fixes bug in which column widths specified as percentages resulted in LaTeX compilation errors (@kbrevoort, #1465).
+
+* Applies user-specified table widths to LaTeX tables (@kbrevoort, #119, #329).
+
 # gt 0.10.0
 
 ## Nanoplots
