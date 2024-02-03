@@ -688,7 +688,7 @@ as_raw_html <- function(
 #' `v0.2.0.5` (March 31, 2020)
 #'
 #' @export
-as_latex <- function(data) {
+as_latex <- function(data, increment = TRUE) {
 
   # Perform input object validation
   stop_if_not_gt_tbl(data = data)
@@ -699,7 +699,7 @@ as_latex <- function(data) {
   # Composition of LaTeX ----------------------------------------------------
 
   # Create a LaTeX fragment for the start of the table
-  table_start <- create_table_start_l(data = data)
+  table_start <- create_table_start_l(data = data, increment = increment)
 
   # Create the heading component
   heading_component <- create_heading_component_l(data = data)
@@ -714,7 +714,7 @@ as_latex <- function(data) {
   footer_component <- create_footer_component_l(data = data)
 
   # Create a LaTeX fragment for the ending tabular statement
-  table_end <- create_table_end_l()
+  table_end <- create_table_end_l(increment = increment)
 
   # If the `rmarkdown` package is available, use the
   # `latex_dependency()` function to load latex packages

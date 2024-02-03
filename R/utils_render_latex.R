@@ -118,7 +118,7 @@ latex_group_row <- function(
 }
 
 #' @noRd
-create_table_start_l <- function(data) {
+create_table_start_l <- function(data, increment) {
 
   # Get vector representation of stub layout
   stub_layout <- get_stub_layout(data = data)
@@ -263,14 +263,19 @@ create_table_start_l <- function(data) {
   if (dt_options_get_value(data = data, option = 'table_width') != 'auto')
     extra_sep <- '@{\\extracolsep{\\fill}}'
 
+  caption <- extract_caption_latex(data)
+
   # Generate setup statements for table including default left
   # alignments and vertical lines for any stub columns
   paste0(
     longtable_post_length,
-    "\\begin{longtable}{",
+    "\\begin{longtable",
+    if (increment) '' else '*',
+    "}{",
     extra_sep,
     paste(col_defs, collapse = ""),
     "}\n",
+    caption,
     collapse = ""
   )
 }
@@ -838,11 +843,13 @@ summary_rows_for_group_l <- function(
 }
 
 #' @noRd
-create_table_end_l <- function() {
+create_table_end_l <- function(increment) {
 
   paste0(
     "\\bottomrule\n",
-    "\\end{longtable}\n",
+    "\\end{longtable",
+    if (increment) '' else '*',
+    "}\n",
     collapse = ""
   )
 }
@@ -1228,4 +1235,40 @@ derive_table_width_bookends <- function(data) {
 
   bookends
 
+}
+
+extract_caption_latex <- function(data) {
+
+  # If a caption has been specified, add it here
+  raw_cap <- dt_options_get_value(data, 'table_caption')
+  if (is.na(raw_cap)) return(NULL)
+
+  # The label has to be added manually when RMarkdown is
+  # being used.
+  this_label <- NULL
+  cap_env <- 'caption'
+  if (!is.null(getOption("knitr.in.progress"))) {
+
+    if (!is.null(knitr::opts_knit$get('quarto.version'))) {
+      # Quarto is being run
+
+      #if (!is.null(knitr::opts_current$get("label")) ||
+      #    !is.null(knitr::opts_current$get("tbl-cap"))) return(NULL)
+      if (!is.null(knitr::opts_current$get("tbl-cap"))) # return(NULL)
+        cap_env <- 'caption'
+
+    } else {
+      # RMarkdown is being processed
+      this_label <- knitr::opts_current$get("label")
+      if (!is.null(this_label))
+        this_label <- sprintf("\\label{tab:%s}", this_label)
+
+    }
+
+  }
+
+  sprintf('\\%s{%s%s}\\tabularnewline\n',
+          cap_env,
+          if (is.null(this_label)) '' else this_label,
+          raw_cap)
 }
