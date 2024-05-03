@@ -55,6 +55,9 @@
     <loc>https://gt.rstudio.com/reference/as.data.frame.gt_tbl.html</loc>
   </url>
   <url>
+    <loc>https://gt.rstudio.com/reference/as_gtable.html</loc>
+  </url>
+  <url>
     <loc>https://gt.rstudio.com/reference/as_latex.html</loc>
   </url>
   <url>
@@ -184,9 +187,6 @@
     <loc>https://gt.rstudio.com/reference/default_fonts.html</loc>
   </url>
   <url>
-    <loc>https://gt.rstudio.com/reference/define_units.html</loc>
-  </url>
-  <url>
     <loc>https://gt.rstudio.com/reference/escape_latex.html</loc>
   </url>
   <url>
@@ -214,6 +214,12 @@
     <loc>https://gt.rstudio.com/reference/fmt_bytes.html</loc>
   </url>
   <url>
+    <loc>https://gt.rstudio.com/reference/fmt_chem.html</loc>
+  </url>
+  <url>
+    <loc>https://gt.rstudio.com/reference/fmt_country.html</loc>
+  </url>
+  <url>
     <loc>https://gt.rstudio.com/reference/fmt_currency.html</loc>
   </url>
   <url>
@@ -224,6 +230,9 @@
   </url>
   <url>
     <loc>https://gt.rstudio.com/reference/fmt_duration.html</loc>
+  </url>
+  <url>
+    <loc>https://gt.rstudio.com/reference/fmt_email.html</loc>
   </url>
   <url>
     <loc>https://gt.rstudio.com/reference/fmt_engineering.html</loc>
@@ -430,6 +439,9 @@
     <loc>https://gt.rstudio.com/reference/pct.html</loc>
   </url>
   <url>
+    <loc>https://gt.rstudio.com/reference/photolysis.html</loc>
+  </url>
+  <url>
     <loc>https://gt.rstudio.com/reference/pipe.html</loc>
   </url>
   <url>
@@ -449,6 +461,9 @@
   </url>
   <url>
     <loc>https://gt.rstudio.com/reference/random_id.html</loc>
+  </url>
+  <url>
+    <loc>https://gt.rstudio.com/reference/reactions.html</loc>
   </url>
   <url>
     <loc>https://gt.rstudio.com/reference/reexports.html</loc>
