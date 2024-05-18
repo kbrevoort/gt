@@ -91,13 +91,23 @@ latex_body_row <- function(content, type) {
 }
 
 #' @noRd
-latex_heading_row <- function(content) {
+latex_heading_row <- function(content, data, bottom = FALSE) {
 
-
+  # If this is the bottom row of the column heads and there is a defined
+  if (!bottom || dt_options_get_value(data, "column_labels_border_top_style") == "none") {
+    heading_row <- create_latex_border_statement(
+      data = data,
+      option = "heading_border_bottom_style",
+      type = 'mid',
+      spacing = 2.5
+    )
+  } else {
+    heading_row <- ""
+  }
 
   paste0(
     paste(paste(content, collapse = " & "), "\\\\ \n"),
-    "\\midrule\\addlinespace[2.5pt]\n",
+    heading_row,
     collapse = ""
   )
 }
@@ -106,15 +116,38 @@ latex_heading_row <- function(content) {
 latex_group_row <- function(
     group_name,
     n_cols,
+    data,
     top_border = TRUE,
     bottom_border = TRUE
 ) {
 
+  if (top_border) {
+    top_line <- create_latex_border_statement(
+      data = data,
+      option = "row_group_border_top_style",
+      type = "mid",
+      spacing = 2.5
+    )
+  } else {
+    top_line <- ""
+  }
+
+  if (bottom_border) {
+    bottom_line <- create_latex_border_statement(
+      data = data,
+      option = "row_group_border_bottom_style",
+      type = "mid",
+      spacing = 2.5
+    )
+  } else {
+    bottom_line <- ""
+  }
+
   paste0(
-    ifelse(top_border, "\\midrule\\addlinespace[2.5pt]\n", ""),
+    top_line,
     "\\multicolumn{", n_cols, "}{l}{", group_name,
     "} \\\\ \n",
-    ifelse(bottom_border, "\\midrule\\addlinespace[2.5pt]\n", ""),
+    bottom_line,
     collapse = ""
   )
 }
@@ -265,8 +298,13 @@ create_table_start_l <- function(data) {
   # Add borders to the right of any columns in the stub
   if (length(stub_layout) > 0) {
 
+    border_symbol <- dplyr::case_when(
+      stub_layout == "group_label" ~ create_vertical_latex_border_symbol(data, "stub_row_group_border_style"),
+      stub_layout == "rowname" ~ create_vertical_latex_border_symbol(data, "stub_border_style")
+    )
+
     col_defs[seq_along(stub_layout)] <-
-      paste0(col_defs[seq_along(stub_layout)], "|")
+      paste0(col_defs[seq_along(stub_layout)], border_symbol)
   }
 
   # If a table width is specified, add an extra column
@@ -283,6 +321,12 @@ create_table_start_l <- function(data) {
     extra_sep,
     paste(col_defs, collapse = ""),
     "}\n",
+    create_latex_border_statement(
+      data = data,
+      option = "table_border_top_style",
+      type = 'top',
+      spacing = NULL
+    ),
     collapse = ""
   )
 }
@@ -426,7 +470,7 @@ create_columns_component_l <- function(data) {
   }
 
   table_col_headings <-
-    paste0(latex_heading_row(content = headings_labels), collapse = "")
+    paste0(latex_heading_row(content = headings_labels, data = data, bottom = TRUE), collapse = "")
 
   if (spanner_row_count > 0) {
 
@@ -510,10 +554,36 @@ create_columns_component_l <- function(data) {
     table_col_spanners <- ""
   }
 
+  # The line above the column headings can be specified in three
+  # different ways.
+
+  top_border <- ""
+  if (
+    (dt_heading_has_title(data = data) && dt_options_get_value(data, "heading_border_bottom_style") == "none") ||
+    (!dt_heading_has_title(data = data) && dt_options_get_value(data, "table_border_top_style") == "none")
+  ) {
+
+    top_border <- create_latex_border_statement(
+      data = data,
+      option = 'column_labels_border_top_style',
+      type = 'mid',
+      spacing = 2.5
+    )
+
+  }
+
+  bottom_border <- create_latex_border_statement(
+    data = data,
+    option = "column_labels_border_bottom_style",
+    type = "mid",
+    spacing = 2.5
+  )
+
   paste0(
-    "\\toprule\n",
+    top_border,
     paste0(table_col_spanners, collapse = ""),
-    table_col_headings
+    table_col_headings,
+    bottom_border
   )
 }
 
@@ -662,8 +732,16 @@ create_body_component_l <- function(data) {
         # Insert a horizontal line if this is the beginning of a new row
         # group and there is a two-column stub
         if (group_start && has_two_col_stub && i != 1) {
+
+          gr_border <- create_latex_border_statement(
+            data = data,
+            option = "row_group_border_bottom_style",
+            type = "mid",
+            spacing = 2.5
+          )
+
           body_section <-
-            append(body_section, "\\midrule\\addlinespace[2.5pt]\n")
+            append(body_section, gr_border)
         }
 
         #
@@ -676,6 +754,7 @@ create_body_component_l <- function(data) {
             latex_group_row(
               group_name = group_label,
               n_cols = n_cols,
+              data = data,
               top_border = i != 1,
               bottom_border = TRUE
             )
@@ -886,7 +965,7 @@ summary_rows_for_group_l <- function(
         row_splits_summary,
         function(x) {
           x <- c("", x)
-          x[1:2] <- paste0("\\multicolumn{1}{l|}{", x[1:2], "}")
+          x[2] <- paste0("\\multicolumn{1}{l}{", x[2], "}")
           x
         }
       )
@@ -909,11 +988,7 @@ summary_rows_for_group_l <- function(
       paste0(
         if (side_group_summary == "top") summary_rows,
         if ("group_label" %in% stub_layout && stub_is_2) {
-          paste0(
-            "\\cmidrule(l{-0.05em}r){2-",
-            ncol(summary_df) + 1,
-            "}\n"
-          )
+          create_latex_partial_border(data = data, option = "summary_row_border_style")
         },
         if (side_group_summary == "bottom") summary_rows
       )
@@ -932,10 +1007,17 @@ summary_rows_for_group_l <- function(
 }
 
 #' @noRd
-create_table_end_l <- function() {
+create_table_end_l <- function(data) {
+
+  bottom_border <- create_latex_border_statement(
+    data = data,
+    option = 'table_border_bottom_style',
+    type = 'bottom',
+    spacing = NULL
+  )
 
   paste0(
-    "\\bottomrule\n",
+    bottom_border,
     "\\end{longtable}\n",
     collapse = ""
   )
@@ -1246,13 +1328,14 @@ create_summary_rows_l <- function(
 
           paste0(
             if ("group_label" %in% stub_layout && stub_width > 1) {
-              paste0(
-                "\\cmidrule(l{-0.05em}r){2-",
-                ncol(summary_df) + stub_width - 1,
-                "}"
-              )
+              create_latex_partial_border(data = data, option = "summary_row_border_style")
             } else {
-              summary_h_border
+              create_latex_border_statement(
+                data = data,
+                option = "summary_row_border_style",
+                type = "mid",
+                spacing = NULL
+              )
             },
             summary_rows
           )
