@@ -120,6 +120,7 @@
 <url><loc>https://gt.rstudio.com/reference/gt_output.html</loc></url>
 <url><loc>https://gt.rstudio.com/reference/gt_preview.html</loc></url>
 <url><loc>https://gt.rstudio.com/reference/gt_split.html</loc></url>
+<url><loc>https://gt.rstudio.com/reference/gt_update_select.html</loc></url>
 <url><loc>https://gt.rstudio.com/reference/gtcars.html</loc></url>
 <url><loc>https://gt.rstudio.com/reference/gtsave.html</loc></url>
 <url><loc>https://gt.rstudio.com/reference/html.html</loc></url>
@@ -134,6 +135,7 @@
 <url><loc>https://gt.rstudio.com/reference/info_paletteer.html</loc></url>
 <url><loc>https://gt.rstudio.com/reference/info_time_style.html</loc></url>
 <url><loc>https://gt.rstudio.com/reference/info_unit_conversions.html</loc></url>
+<url><loc>https://gt.rstudio.com/reference/latex.html</loc></url>
 <url><loc>https://gt.rstudio.com/reference/local_image.html</loc></url>
 <url><loc>https://gt.rstudio.com/reference/locale.html</loc></url>
 <url><loc>https://gt.rstudio.com/reference/location-helper.html</loc></url>
@@ -157,7 +159,6 @@
 <url><loc>https://gt.rstudio.com/reference/pct.html</loc></url>
 <url><loc>https://gt.rstudio.com/reference/peeps.html</loc></url>
 <url><loc>https://gt.rstudio.com/reference/photolysis.html</loc></url>
-<url><loc>https://gt.rstudio.com/reference/pipe.html</loc></url>
 <url><loc>https://gt.rstudio.com/reference/pizzaplace.html</loc></url>
 <url><loc>https://gt.rstudio.com/reference/print.gt_tbl.html</loc></url>
 <url><loc>https://gt.rstudio.com/reference/px.html</loc></url>
